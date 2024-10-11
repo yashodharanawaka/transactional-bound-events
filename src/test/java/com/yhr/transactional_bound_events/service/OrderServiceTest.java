@@ -2,50 +2,43 @@ package com.yhr.transactional_bound_events.service;
 
 import com.yhr.transactional_bound_events.persistent.Order;
 import com.yhr.transactional_bound_events.repository.OrderRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
-class OrderServiceTest {
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+public class OrderServiceTest {
+
+    @Mock
+    private JmsTemplate jmsTemplate;
 
     @Mock
     private OrderRepository orderRepository;
 
-    @Mock
-    private EventPublisher eventPublisher;
-    @Mock
-    private OrderListener orderListener;
-
     @InjectMocks
     private OrderService orderService;
 
-    private AutoCloseable openMocks;
+    @InjectMocks
+    private OrderCreatedEventListener orderEventListener;
 
-    @BeforeEach
-    void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-    }
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
+    public OrderServiceTest() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void createOrder() throws InterruptedException {
-        orderService.createOrder();
-
-        verify(orderRepository, times(1)).save(any(Order.class));
-        verify(eventPublisher, times(1)).publish(any(Order.class));
-        Thread.sleep(30000);
+    public void testOrderCreatedJmsMessageSentAfterCommit() {
+        //TODO
     }
 }

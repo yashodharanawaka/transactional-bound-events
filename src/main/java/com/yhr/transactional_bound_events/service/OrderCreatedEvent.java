@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class TransactionEvent {
+public class OrderCreatedEvent {
     private final Order order;
 
 }
